@@ -1,5 +1,7 @@
 # Terraforma
 
+![logo](./assets/terraforma_logo.svg)
+
 - A local kubernetes env using terraform and ArgoCD for an `App-of-Apps` style of application management.
 - The idea here is that you can leverage this repo to stand up a local kube cluster, toggle on and off applications, and clean everything up when you are done.
 - Learning, experimenting, testing

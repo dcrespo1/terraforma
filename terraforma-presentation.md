@@ -1,23 +1,49 @@
 ---
-theme: dark
+theme: dracula
 author: Dylan Crespo
 date: April 03, 2026
 paging: "%d / %d"
 ---
 
-# Local Kubernetes Development Workflow
+# Terraforma
+![logo](./assets/terraforma_logo.svg)
+---
+
+## The Problem
+
+Learning Kubernetes in production is risky.
+Learning it in isolation misses how everything connects.
+
+I wanted a local environment where I could:
+
+- Deploy **real tools** the way they'd run in production
+- **Toggle apps on and off** without rebuilding from scratch
+- Experiment with how Kubernetes primitives  — **interact with each other**
+  - ingress, 
+  - operators 
+  - policy
+  - observability
+- Build **muscle memory** for GitOps workflows before applying them at work
+
+The goal isn't just a running cluster.
+It's understanding *why* things are wired the way they are.
 
 ---
 
-## The Stack
+## The Solution: Terraforma
 
-Four tools, one workflow:
+One repo. One command. A fully configured local platform.
+```bash
+terraform apply
+```
 
-- **Terraform** — provisions the cluster and bootstraps Argo CD
-- **kind** — runs Kubernetes locally inside Docker
-- **Argo CD** — GitOps controller, syncs cluster state from Git
-- **Config Repo** — the single source of truth for everything running in the cluster
+- **kind** spins up a local Kubernetes cluster in Docker
+- **Terraform** deploys Argo CD and hands off control to Git
+- **Argo CD** syncs the cluster state from this repo
+- **values.yaml** controls exactly what's running at any given time
 
+Flip a toggle, push, learn something new.
+Tear it all down, rebuild in minutes.
 ---
 
 ## Why GitOps?
@@ -102,7 +128,7 @@ manifest — the root app. This hands control over to Git.
 
 ```hcl
 resource "kubernetes_manifest" "root_app" {
-  manifest   = yamldecode(file("${path.module}/bootstrap/root-app.yaml"))
+  manifest   = yamldecode(file("${path.module}/../bootstrap/root-app.yaml"))
   depends_on = [helm_release.argocd]
 }
 ```
@@ -123,10 +149,14 @@ metadata:
   name: root
   namespace: argocd
 spec:
+  project: default
   source:
-    repoURL: https://github.com/you/your-config-repo
+    repoURL: https://github.com/dcrespo1/terraforma
     targetRevision: HEAD
-    path: root-app # a Helm chart
+    path: root-app
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
   syncPolicy:
     automated:
       prune: true
@@ -315,3 +345,7 @@ terraform apply && git push
 ```
 
 > "The cluster is a reflection of the repo."
+
+```
+
+```
