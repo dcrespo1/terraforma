@@ -1,7 +1,7 @@
 # Global settings applied to all Application manifests.
 # Update repoURL to point at your actual config repo.
 global:
-  repoURL: https://github.com/you/your-config-repo
+  repoURL: https://github.com/dcrespo1/terraforma
   targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
@@ -13,13 +13,13 @@ global:
 apps:
   # Wave 1 — infrastructure / operators
   ingressNginx:
-    enabled: true
+    enabled: false
     namespace: ingress-nginx
   kyverno:
-    enabled: true
+    enabled: false
     namespace: kyverno
   kubePrometheusStack:
-    enabled: true
+    enabled: false
     namespace: monitoring
   certManager:
     enabled: false
@@ -27,10 +27,10 @@ apps:
 
   # Wave 2 — depends on wave 1 operators/CRDs being ready
   postgresql:
-    enabled: true
+    enabled: false
     namespace: postgresql
   kyvernoPolicies:
-    enabled: true
+    enabled: false
     namespace: kyverno
 
   # Wave 3 — application workloads

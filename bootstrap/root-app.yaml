@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/you/your-config-repo   # replace with your repo
+    repoURL: https://github.com/dcrespo1/terraforma
     targetRevision: HEAD
     path: root-app
   destination:
