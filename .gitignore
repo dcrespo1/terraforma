@@ -3,6 +3,7 @@
 
 # Terraform
 terraform/.terraform/
+terraform/argocd-local-config
 terraform/.terraform.lock.hcl
 terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
