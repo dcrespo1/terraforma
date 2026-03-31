@@ -93,3 +93,11 @@ resource "null_resource" "root_app" {
     command = "kubectl apply -f ${path.module}/../bootstrap/root-app.yaml --kubeconfig ${kind_cluster.this.kubeconfig_path}"
   }
 }
+
+resource "null_resource" "ingress_label" {
+  depends_on = [null_resource.root_app]
+
+  provisioner "local-exec" {
+    command = "kubectl label node argocd-local-control-plane ingress-ready=true --kubeconfig ${kind_cluster.this.kubeconfig_path}"
+  }
+}
