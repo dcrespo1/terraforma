@@ -101,3 +101,16 @@ resource "null_resource" "ingress_label" {
     command = "kubectl label node argocd-local-control-plane ingress-ready=true --kubeconfig ${kind_cluster.this.kubeconfig_path}"
   }
 }
+
+resource "null_resource" "argocd_cleanup" {
+  depends_on = [null_resource.root_app]
+
+  triggers = {
+    kubeconfig = kind_cluster.this.kubeconfig_path
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "kubectl delete applications --all -n argocd --kubeconfig ${self.triggers.kubeconfig} || true"
+  }
+}
