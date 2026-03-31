@@ -1,2 +1,15 @@
 .vscode
 .prettierignore
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/.terraform.tfstate.lock.info
+
+# kind-config.yaml is generated/local — ignore if you move config inline
+# terraform/kind-config.yaml  # uncomment if you don't want this tracked
+
+# OS
+.DS_Store
