@@ -1,0 +1,27 @@
+{{- if .Values.apps.kyvernoPolicies.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kyverno-policies
+  namespace: argocd
+  annotations:
+    # Wave 2 — Kyverno CRDs from wave 1 must exist before policies can be applied
+    argocd.argoproj.io/sync-wave: "2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: {{ .Values.global.repoURL }}
+    targetRevision: {{ .Values.global.targetRevision }}
+    path: apps/kyverno-policies
+  destination:
+    server: {{ .Values.global.destination.server }}
+    namespace: {{ .Values.apps.kyvernoPolicies.namespace }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}

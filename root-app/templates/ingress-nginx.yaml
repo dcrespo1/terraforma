@@ -1,0 +1,46 @@
+{{- if .Values.apps.ingressNginx.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ingress-nginx
+  namespace: argocd
+  annotations:
+    # Wave 1 — should be up before any app that needs an Ingress resource
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://kubernetes.github.io/ingress-nginx
+    chart: ingress-nginx
+    targetRevision: "*"
+    helm:
+      valuesObject:
+        controller:
+          # kind requires a NodePort service — LoadBalancer type will stay
+          # in Pending forever since there's no cloud LB provider locally.
+          service:
+            type: NodePort
+            nodePorts:
+              http: 30080
+              https: 30443
+          # Allows Ingress resources in any namespace to use this controller
+          watchIngressWithoutClass: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+  destination:
+    server: {{ .Values.global.destination.server }}
+    namespace: {{ .Values.apps.ingressNginx.namespace }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}

@@ -1,0 +1,39 @@
+# Global settings applied to all Application manifests.
+# Update repoURL to point at your actual config repo.
+global:
+  repoURL: https://github.com/you/your-config-repo
+  targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+
+# Toggle apps on/off here.
+# Set enabled: false to prevent an app from being deployed.
+# With prune: true on the root app, flipping enabled to false will also
+# remove the app and its workloads from the cluster on the next sync.
+apps:
+  # Wave 1 — infrastructure / operators
+  ingressNginx:
+    enabled: true
+    namespace: ingress-nginx
+  kyverno:
+    enabled: true
+    namespace: kyverno
+  kubePrometheusStack:
+    enabled: true
+    namespace: monitoring
+  certManager:
+    enabled: false
+    namespace: cert-manager
+
+  # Wave 2 — depends on wave 1 operators/CRDs being ready
+  postgresql:
+    enabled: true
+    namespace: postgresql
+  kyvernoPolicies:
+    enabled: true
+    namespace: kyverno
+
+  # Wave 3 — application workloads
+  myApi:
+    enabled: false
+    namespace: my-api

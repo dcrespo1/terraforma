@@ -1,0 +1,26 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-latest-tag
+  annotations:
+    policies.kyverno.io/title: Disallow Latest Tag
+    policies.kyverno.io/description: >
+      Requires container images to specify a tag other than :latest.
+      Unpinned images make deployments non-reproducible and can cause
+      unexpected behavior when the upstream image changes.
+spec:
+  validationFailureAction: audit
+  background: true
+  rules:
+    - name: check-image-tag
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        message: "Images must specify a tag other than ':latest'."
+        pattern:
+          spec:
+            containers:
+              - image: "!*:latest"

@@ -1,0 +1,28 @@
+{{- if .Values.apps.myApi.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-api
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    # Unlike the Helm chart apps above, this points at a path
+    # within this config repo itself — raw manifests or kustomize.
+    repoURL: {{ .Values.global.repoURL }}
+    targetRevision: {{ .Values.global.targetRevision }}
+    path: apps/my-api
+  destination:
+    server: {{ .Values.global.destination.server }}
+    namespace: {{ .Values.apps.myApi.namespace }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}

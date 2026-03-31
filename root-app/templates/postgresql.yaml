@@ -1,0 +1,50 @@
+{{- if .Values.apps.postgresql.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgresql
+  namespace: argocd
+  annotations:
+    # Wave 2 — data layer comes after infrastructure is ready
+    argocd.argoproj.io/sync-wave: "2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: postgresql
+    targetRevision: "*"
+    helm:
+      valuesObject:
+        auth:
+          # Override these or pull from a Secret in a real environment.
+          # For local dev these are fine as-is.
+          postgresPassword: "localdev"
+          database: "appdb"
+        primary:
+          persistence:
+            # kind nodes are ephemeral — data won't survive a cluster
+            # rebuild, which is fine for local dev.
+            enabled: true
+            size: 1Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+        # Disable read replicas for local dev — saves resources
+        readReplicas:
+          replicaCount: 0
+  destination:
+    server: {{ .Values.global.destination.server }}
+    namespace: {{ .Values.apps.postgresql.namespace }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}
