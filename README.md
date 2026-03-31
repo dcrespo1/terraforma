@@ -1,6 +1,8 @@
-# GitOps Config Repo
+# Terraforma
 
-App-of-Apps pattern using Helm-templated Application manifests.
+- A local kubernetes env using terraform and ArgoCD for an `App-of-Apps` style of application management.
+- The idea here is that you can leverage this repo to stand up a local kube cluster, toggle on and off applications, and clean everything up when you are done.
+- Learning, experimenting, testing
 
 ## Structure
 
@@ -24,6 +26,7 @@ apps/
 ## Adding a new app
 
 1. Add a toggle to `root-app/values.yaml`:
+
    ```yaml
    apps:
      myNewApp:
