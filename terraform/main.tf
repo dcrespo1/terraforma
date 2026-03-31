@@ -86,7 +86,10 @@ resource "helm_release" "argocd" {
 }
 
 # Bootstrap root Argo CD Application
-resource "kubernetes_manifest" "root_app" {
-  manifest   = yamldecode(file("${path.module}/../bootstrap/root-app.yaml"))
+resource "null_resource" "root_app" {
   depends_on = [helm_release.argocd]
+
+  provisioner "local-exec" {
+    command = "kubectl apply -f ${path.module}/../bootstrap/root-app.yaml --kubeconfig ${kind_cluster.this.kubeconfig_path}"
+  }
 }
