@@ -13,13 +13,13 @@ global:
 apps:
   # Wave 1 — infrastructure / operators
   ingressNginx:
-    enabled: false
+    enabled: true
     namespace: ingress-nginx
   kyverno:
     enabled: false
     namespace: kyverno
   kubePrometheusStack:
-    enabled: false
+    enabled: true
     namespace: monitoring
   certManager:
     enabled: false

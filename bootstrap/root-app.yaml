@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/dcrespo1/terraforma
-    targetRevision: HEAD
+    targetRevision: deploy
     path: root-app
   destination:
     server: https://kubernetes.default.svc
