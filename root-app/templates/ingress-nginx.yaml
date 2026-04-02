@@ -18,14 +18,21 @@ spec:
     helm:
       valuesObject:
         controller:
-          # kind requires a NodePort service — LoadBalancer type will stay
-          # in Pending forever since there's no cloud LB provider locally.
+          hostNetwork: true
+          hostPort:
+            enabled: true
+          kind: DaemonSet
+          nodeSelector:
+            ingress-ready: "true"
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Equal
+              effect: NoSchedule
           service:
             type: NodePort
             nodePorts:
               http: 30080
               https: 30443
-          # Allows Ingress resources in any namespace to use this controller
           watchIngressWithoutClass: true
           resources:
             requests:

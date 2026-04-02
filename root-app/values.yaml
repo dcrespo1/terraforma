@@ -13,7 +13,7 @@ global:
 apps:
   # Wave 1 — infrastructure / operators
   ingressNginx:
-    enabled: true
+    enabled: false
     namespace: ingress-nginx
   kyverno:
     enabled: false
@@ -27,7 +27,7 @@ apps:
 
   # Wave 2 — depends on wave 1 operators/CRDs being ready
   postgresql:
-    enabled: false
+    enabled: true
     namespace: postgresql
   kyvernoPolicies:
     enabled: false
